@@ -35,7 +35,7 @@ class Application:
         self.overlay.update_image(image)
 
     def finish_app(self):
-        self.overlay.quit()
+        self.overlay.destroy()
 
     def _generate_image(self) -> Image:
         random_categories = self._randomizer.get_random_challenges(self._categories)
