@@ -25,7 +25,7 @@ class ImageGenerator:
             self._small_font = ImageFont.load_default()
 
     @staticmethod
-    def _draw_text(draw, position, text, font, fill: str | tuple[int, int, int] = "white"):
+    def _draw_text(draw, position, text, font, fill = "white"):
         draw.text(position, text, font=font, fill=fill)
 
     @staticmethod

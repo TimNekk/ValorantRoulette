@@ -1,3 +1,5 @@
+from PIL import Image
+
 from src.json_reader import JsonReader
 from src.image_generator import ImageGenerator
 from src.overlay.overlay import Overlay
@@ -6,11 +8,12 @@ from src.randomizer import Randomizer
 
 
 class Application:
-    def __init__(self):
-        self._json_reader = JsonReader("valorant_challenges.json")
-        self._randomizer = Randomizer(min_challenges=2, max_challenges=3)
+    def __init__(self, settings_json_path: str) -> None:
+        self._settings = JsonReader.get_settings(settings_json_path)
+        self._randomizer = Randomizer(min_challenges=self._settings.min_challenges,
+                                      max_challenges=self._settings.max_challenges)
         self._image_generator = ImageGenerator()
-        self._categories = self._json_reader.get_categories()
+        self._categories = JsonReader.get_categories(self._settings.challenges_json_path)
 
         self.overlay = Overlay(self._generate_image())
         self.overlay_visible = True
@@ -28,15 +31,12 @@ class Application:
         self.overlay.withdraw()
 
     def update_overlay(self):
-        image_path = self._generate_image()
-        self.overlay.update_image(image_path)
+        image = self._generate_image()
+        self.overlay.update_image(image)
 
     def finish_app(self):
-        self.overlay.quit()
+        self.overlay.destroy()
 
-    def _generate_image(self) -> str:
+    def _generate_image(self) -> Image:
         random_categories = self._randomizer.get_random_challenges(self._categories)
-        image = self._image_generator.generate_random_challenges_image(random_categories)
-        file_name = "random_challenges.png"
-        self._image_generator.save_image(image, file_name)
-        return file_name
+        return self._image_generator.generate_random_challenges_image(random_categories)
