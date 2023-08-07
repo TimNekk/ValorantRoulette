@@ -1,3 +1,5 @@
+from PIL import Image
+
 from src.json_reader import JsonReader
 from src.image_generator import ImageGenerator
 from src.overlay.overlay import Overlay
@@ -28,15 +30,12 @@ class Application:
         self.overlay.withdraw()
 
     def update_overlay(self):
-        image_path = self._generate_image()
-        self.overlay.update_image(image_path)
+        image = self._generate_image()
+        self.overlay.update_image(image)
 
     def finish_app(self):
         self.overlay.quit()
 
-    def _generate_image(self) -> str:
+    def _generate_image(self) -> Image:
         random_categories = self._randomizer.get_random_challenges(self._categories)
-        image = self._image_generator.generate_random_challenges_image(random_categories)
-        file_name = "random_challenges.png"
-        self._image_generator.save_image(image, file_name)
-        return file_name
+        return self._image_generator.generate_random_challenges_image(random_categories)
