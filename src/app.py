@@ -8,11 +8,12 @@ from src.randomizer import Randomizer
 
 
 class Application:
-    def __init__(self):
-        self._json_reader = JsonReader("valorant_challenges.json")
-        self._randomizer = Randomizer(min_challenges=2, max_challenges=3)
+    def __init__(self, settings_json_path: str) -> None:
+        self._settings = JsonReader.get_settings(settings_json_path)
+        self._randomizer = Randomizer(min_challenges=self._settings.min_challenges,
+                                      max_challenges=self._settings.max_challenges)
         self._image_generator = ImageGenerator()
-        self._categories = self._json_reader.get_categories()
+        self._categories = JsonReader.get_categories(self._settings.challenges_json_path)
 
         self.overlay = Overlay(self._generate_image())
         self.overlay_visible = True

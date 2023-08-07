@@ -1,16 +1,21 @@
 import json
 
 from src.models import Challenge, Category
+from src.models.settings import Settings
 
 
 class JsonReader:
-    def __init__(self, path_to_json: str):
-        self._path_to_json = path_to_json
+    @staticmethod
+    def get_settings(path_to_json) -> Settings:
+        with open(path_to_json, "r", encoding="utf-8") as f:
+            data = json.load(f)
+            return Settings(**data)
 
-    def get_categories(self) -> list[Category]:
+    @staticmethod
+    def get_categories(path_to_json) -> list[Category]:
         categories_list = []
 
-        with open(self._path_to_json, "r", encoding="utf-8") as f:
+        with open(path_to_json, "r", encoding="utf-8") as f:
             data = json.load(f)
             for category_data in data["categories"]:
                 category_name = category_data["name"]

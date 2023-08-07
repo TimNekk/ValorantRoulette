@@ -2,7 +2,7 @@ from src.app import Application
 
 
 def main():
-    app = Application()
+    app = Application(settings_json_path="settings.json")
     app.run()
 
 
