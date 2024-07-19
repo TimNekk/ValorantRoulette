@@ -1,5 +1,5 @@
 {
   "challenges_json_path": "valorant_challenges.json",
-  "min_challenges": 2,
+  "min_challenges": 1,
   "max_challenges": 3
 }
