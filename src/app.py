@@ -1,10 +1,10 @@
-from PIL import Image
-
+import sys
+from PyQt5.QtWidgets import QApplication
+import keyboard
 from src.json_reader import JsonReader
-from src.image_generator import ImageGenerator
-from src.overlay.overlay import Overlay
-from src.overlay.overlay_controller import OverlayController
 from src.randomizer import Randomizer
+from src.overlay.signal_handler import SignalHandler
+from src.overlay.overlay_window import OverlayWindow
 
 
 class Application:
@@ -12,31 +12,39 @@ class Application:
         self._settings = JsonReader.get_settings(settings_json_path)
         self._randomizer = Randomizer(min_challenges=self._settings.min_challenges,
                                       max_challenges=self._settings.max_challenges)
-        self._image_generator = ImageGenerator()
         self._categories = JsonReader.get_categories(self._settings.challenges_json_path)
 
-        self.overlay = Overlay(self._generate_image())
-        self.overlay_visible = True
-        self.controller = OverlayController(self)
+        self.app = QApplication(sys.argv)
+        self.overlay = OverlayWindow(self)
+
+        self.signal_handler = SignalHandler()
+        self.signal_handler.refresh_signal.connect(self.get_new_challenges)
+        self.signal_handler.toggle_visibility_signal.connect(self.toggle_visibility)
+        self.signal_handler.close_signal.connect(self.close_application)
+
+        keyboard.add_hotkey('f7', self.signal_handler.toggle_visibility_signal.emit)
+        keyboard.add_hotkey('f8', self.signal_handler.refresh_signal.emit)
+        keyboard.add_hotkey('f9', self.signal_handler.close_signal.emit)
+
+        self.get_new_challenges()
+
+    def toggle_visibility(self):
+        if self.overlay.isVisible():
+            self.overlay.hide()
+        else:
+            self.overlay.show()
+
+    def get_new_challenges(self):
+        challenges = self._randomizer.get_random_challenges(self._categories)
+        self.overlay.update_challenges(challenges)
+
+    def close_application(self):
+        self.app.quit()
 
     def run(self):
-        self.overlay.mainloop()
+        sys.exit(self.app.exec_())
 
-    def show_overlay(self):
-        self.overlay_visible = True
-        self.overlay.deiconify()
 
-    def hide_overlay(self):
-        self.overlay_visible = False
-        self.overlay.withdraw()
-
-    def update_overlay(self):
-        image = self._generate_image()
-        self.overlay.update_image(image)
-
-    def finish_app(self):
-        self.overlay.destroy()
-
-    def _generate_image(self) -> Image:
-        random_categories = self._randomizer.get_random_challenges(self._categories)
-        return self._image_generator.generate_random_challenges_image(random_categories)
+if __name__ == "__main__":
+    app = Application("path/to/settings.json")
+    app.run()
