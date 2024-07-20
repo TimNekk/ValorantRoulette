@@ -10,6 +10,8 @@
 
 ## 🚀 Usage
 
+Use **Fullscreen Windowed** or **Windowed** in Valorant
+
 - <kbd>f7</kbd> Show / Hide overlay
 - <kbd>f8</kbd> Generate new Challenges
-- <kbd>f10</kbd> Finish app
+- <kbd>f9</kbd> Finish app
