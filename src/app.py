@@ -43,8 +43,3 @@ class Application:
 
     def run(self):
         sys.exit(self.app.exec_())
-
-
-if __name__ == "__main__":
-    app = Application("path/to/settings.json")
-    app.run()

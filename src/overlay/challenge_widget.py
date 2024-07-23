@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QHBoxLayout
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap, QPainter
@@ -31,7 +33,7 @@ class ChallengeWidget(QWidget):
         layout.addLayout(text_layout, 1)
 
     def set_icon(self, category):
-        icon_pixmap = QPixmap(f"assets/{category}.png")
+        icon_pixmap = QPixmap(str(Path(__file__).resolve().parent.parent.parent / "assets" / f"{category}.png"))
         if not icon_pixmap.isNull():
             white_pixmap = QPixmap(icon_pixmap.size())
             white_pixmap.fill(Qt.transparent)
